@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: ip-gateway
+
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:20000
+      config:
+        server-addr: localhost:20000
+
+  config:
+    import:
+      - optional:nacos:ip-gateway.yaml

@@ -1,0 +1,50 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.ch503j</groupId>
+        <artifactId>infinite-progress</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>ip-gateway</artifactId>
+    <packaging>jar</packaging>
+    <name>ip-gateway</name>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencies>
+        <!-- 公共模块依赖 -->
+        <dependency>
+            <groupId>com.ch503j</groupId>
+            <artifactId>ip-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- Spring Cloud Gateway -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-gateway</artifactId>
+        </dependency>
+
+        <!-- Lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- bootstrap配置文件读取，spring cloud 2020.* 以后的版本默认是禁用 bootstrap 的，所以需要将此依赖引入工程中 -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-bootstrap</artifactId>
+        </dependency>
+    </dependencies>
+
+</project>
