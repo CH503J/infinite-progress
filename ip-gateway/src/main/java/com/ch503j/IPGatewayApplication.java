@@ -12,6 +12,6 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 public class IPGatewayApplication {
     public static void main(String[] args) {
         SpringApplication.run(IPGatewayApplication.class, args);
-        log.info("================= Gateway网关已启动 =================");
+        log.info("================= Gateway 网关已启动 =================");
     }
 }

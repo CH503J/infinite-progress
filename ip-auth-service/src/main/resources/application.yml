@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: ip-gateway
+    name: ip-auth-service
 
   cloud:
     nacos:
@@ -14,4 +14,4 @@ spring:
 
   config:
     import:
-      - optional:nacos:ip-gateway.yaml
+      - optional:nacos:ip-auth-service.yaml

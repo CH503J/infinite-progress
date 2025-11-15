@@ -3,14 +3,12 @@ package com.ch503j.common.core.exceptions;
 import com.ch503j.common.core.enums.CodeEnum;
 import com.ch503j.common.core.enums.StatusEnum;
 import com.ch503j.common.core.result.ApiResult;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 /**
  * 全局异常处理器
  */
-@Slf4j
 @RestControllerAdvice(basePackages = "com.ch503j")
 public class GlobalExceptionHandler {
 
@@ -32,7 +30,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ApiResult<?> handleException(Exception e) {
         // 使用日志记录异常堆栈
-        log.error("系统异常：", e);
+        System.out.println( "系统异常" + e);
 
         // 生产环境返回统一友好提示
         return ApiResult.fail(
