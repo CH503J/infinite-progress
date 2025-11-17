@@ -14,9 +14,6 @@
 
     <!-- 子模块 -->
     <modules>
-        <module>ip-common</module>
-        <module>ip-gateway</module>
-        <module>ip-auth-service</module>
     </modules>
 
     <!-- 全局属性 -->
@@ -31,8 +28,8 @@
         <spring-cloud-alibaba.version>2023.0.3.3</spring-cloud-alibaba.version>
         <!-- Lombok 版本 -->
         <lombok.version>1.18.30</lombok.version>
-        <!-- Maven Complies 插件版本 -->
-        <maven-complies.version>3.13.0</maven-complies.version>
+        <!-- Maven Compiler 插件版本 -->
+        <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
     </properties>
 
     <!-- Spring Cloud BOM -->
@@ -83,7 +80,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>${maven-complies.version}</version>
+                    <version>${maven-compiler-plugin.version}</version>
                 </plugin>
 
                 <!-- Spring Boot Maven 插件 -->
