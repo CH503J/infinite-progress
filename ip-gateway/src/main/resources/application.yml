@@ -1,0 +1,7 @@
+server:
+  port: 22010
+  forward-headers-strategy: framework
+
+spring:
+  application:
+    name: ip-gateway
