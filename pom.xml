@@ -32,6 +32,9 @@
         <lombok.version>1.18.30</lombok.version>
         <!-- Maven Compiler 插件版本 -->
         <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
+        <!-- MyBatis Plus 3.5.9 -->
+        <mybatis-plus.version>3.5.9</mybatis-plus.version>
+        <spring-web.version>6.2.12</spring-web.version>
     </properties>
 
     <!-- Spring Cloud BOM -->
@@ -70,6 +73,25 @@
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
                 <scope>provided</scope>
+            </dependency>
+
+            <!-- MyBatis Plus Dependencies -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-extension</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-web</artifactId>
+                <version>${spring-web.version}</version>
             </dependency>
 
         </dependencies>

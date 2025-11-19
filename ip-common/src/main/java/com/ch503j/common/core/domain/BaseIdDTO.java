@@ -1,0 +1,32 @@
+package com.ch503j.common.core.domain;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
+
+import java.io.Serial;
+import java.util.List;
+
+/**
+ * BaseIdDTO
+ * <p>
+ * 所有带主键 ID 的 DTO 基类，继承 BaseDTO
+ */
+@EqualsAndHashCode(callSuper = true)
+@Data
+@Accessors(chain = true)
+public class BaseIdDTO extends BaseDTO {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * 主键 ID
+     */
+    private String id;
+
+    /**
+     * 批量操作使用的 ID 列表
+     */
+    private List<String> ids;
+}
