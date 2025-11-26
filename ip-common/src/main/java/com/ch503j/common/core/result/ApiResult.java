@@ -4,7 +4,6 @@ import com.ch503j.common.core.enums.CodeEnum;
 import com.ch503j.common.core.enums.StatusEnum;
 import lombok.Data;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.regex.Matcher;
 
@@ -16,7 +15,6 @@ import java.util.regex.Matcher;
 @Data
 public class ApiResult<T> implements Serializable {
 
-    @Serial
     private static final long serialVersionUID = 1L;
 
     /** 业务状态码 */

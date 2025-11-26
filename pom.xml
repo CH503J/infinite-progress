@@ -14,7 +14,10 @@
 
     <!-- 子模块 -->
     <modules>
+        <!-- 模块 -->
         <module>ip-common</module>
+        <module>ip-feign-client</module>
+        <!-- 子服务 -->
         <module>ip-gateway</module>
         <module>ip-auth-service</module>
     </modules>
