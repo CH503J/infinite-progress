@@ -5,13 +5,16 @@ spring:
   application:
     name: ip-auth-service
 
+  config:
+    import: nacos:ip-auth-service.yaml
+
   cloud:
     nacos:
+      server-addr: localhost:20000
       discovery:
-        server-addr: localhost:20000
-      config:
-        server-addr: localhost:20000
+        timeout: 10000
+        heart-beat-interval: 5
+        heart-beat-timeout: 15
+        health-check-enabled: true
+        register-enabled: true
 
-  config:
-    import:
-      - optional:nacos:ip-auth-service.yaml
