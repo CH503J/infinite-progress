@@ -1,12 +1,12 @@
 server:
-  port: 23000
+  port: 22000
 
 spring:
   application:
-    name: ip-gateway
+    name: ip-auth-service
 
   config:
-    import: nacos:ip-gateway.yaml
+    import: nacos:ip-auth-service.yaml
 
   cloud:
     nacos:

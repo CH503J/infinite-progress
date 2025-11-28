@@ -3,12 +3,10 @@ package com.ch503j.common.core.domain;
 import com.ch503j.common.core.enums.CodeEnum;
 import com.ch503j.common.core.enums.StatusEnum;
 
-import java.io.Serial;
 import java.io.Serializable;
 
 public class ApiResult<T> implements Serializable {
 
-    @Serial
     private static final long serialVersionUID = 1L;
 
     private int code;
