@@ -1,12 +1,12 @@
 server:
-  port: 22000
+  port: 24000
 
 spring:
   application:
-    name: ip-gateway
+    name: ip-user-service
 
   config:
-    import: nacos:ip-gateway.yaml
+    import: nacos:ip-user-service.yaml
 
   cloud:
     nacos:
@@ -17,3 +17,4 @@ spring:
         heart-beat-timeout: 15
         health-check-enabled: true
         register-enabled: true
+

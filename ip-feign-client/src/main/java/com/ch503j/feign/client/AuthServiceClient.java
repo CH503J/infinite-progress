@@ -1,6 +1,6 @@
 package com.ch503j.feign.client;
 
-import com.ch503j.common.core.result.ApiResult;
+import com.ch503j.common.core.domain.ApiResult;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;

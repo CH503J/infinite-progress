@@ -1,7 +1,7 @@
 package com.ch503j.feign.config;
 
+import com.ch503j.common.core.domain.ApiResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ch503j.common.core.result.ApiResult;
 import feign.Response;
 import feign.codec.ErrorDecoder;
 import lombok.extern.slf4j.Slf4j;

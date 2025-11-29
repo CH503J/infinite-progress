@@ -8,10 +8,10 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 @Slf4j
 @SpringBootApplication
 @EnableDiscoveryClient
-public class IpAuthServiceApplication {
+public class IPAuthServiceApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(IpAuthServiceApplication.class, args);
+        SpringApplication.run(IPAuthServiceApplication.class, args);
         log.info("================= auth-service 鉴权微服务已启动 =================");
     }
 

@@ -1,6 +1,6 @@
 package com.ch503j.feign.client;
 
-import com.ch503j.common.core.result.ApiResult;
+import com.ch503j.common.core.domain.ApiResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 

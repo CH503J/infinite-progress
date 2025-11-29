@@ -20,6 +20,7 @@
         <!-- 子服务 -->
         <module>ip-gateway</module>
         <module>ip-auth-service</module>
+        <module>ip-user-service</module>
     </modules>
 
     <!-- 全局属性 -->
