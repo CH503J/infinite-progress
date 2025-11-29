@@ -13,9 +13,9 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>ip-gateway</artifactId>
-    <name>ip-gateway</name>
-    <description>Gateway 网关微服务</description>
+    <artifactId>ip-auth-service</artifactId>
+    <name>auth-service</name>
+    <description>鉴权服务</description>
 
     <dependencies>
         <!-- Spring Boot Starters -->
@@ -55,15 +55,6 @@
             <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
         </dependency>
 
-    </dependencies>
 
-    <build>
-        <plugins>
-            <!-- Spring Boot Maven Plugin -->
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
+    </dependencies>
 </project>

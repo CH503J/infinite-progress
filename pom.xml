@@ -19,6 +19,7 @@
         <module>ip-feign-client</module>
         <!-- 子服务 -->
         <module>ip-gateway</module>
+        <module>ip-auth-service</module>
     </modules>
 
     <!-- 全局属性 -->

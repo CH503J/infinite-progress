@@ -10,7 +10,7 @@ spring:
 
   cloud:
     nacos:
-      server-addr: localhost:20000
+      server-addr: 192.168.1.109:20000
       discovery:
         timeout: 10000
         heart-beat-interval: 5
