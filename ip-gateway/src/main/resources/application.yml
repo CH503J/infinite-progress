@@ -1,19 +1,2 @@
 server:
-  port: 22010
-
-spring:
-  application:
-    name: ip-gateway
-
-  config:
-    import: nacos:ip-gateway.yaml
-
-  cloud:
-    nacos:
-      server-addr: 192.168.1.109:20000
-      discovery:
-        timeout: 10000
-        heart-beat-interval: 5
-        heart-beat-timeout: 15
-        health-check-enabled: true
-        register-enabled: true
+  port: 22011

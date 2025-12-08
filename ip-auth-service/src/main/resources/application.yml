@@ -1,20 +1,2 @@
 server:
-  port: 22020
-
-spring:
-  application:
-    name: ip-auth-service
-
-  config:
-    import: nacos:ip-auth-service.yaml
-
-  cloud:
-    nacos:
-      server-addr: 192.168.1.109:20000
-      discovery:
-        timeout: 10000
-        heart-beat-interval: 5
-        heart-beat-timeout: 15
-        health-check-enabled: true
-        register-enabled: true
-
+  port: 22021

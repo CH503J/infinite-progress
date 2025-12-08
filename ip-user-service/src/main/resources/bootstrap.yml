@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: ip-user-service
+
+  # 关键：这里一定要写在 bootstrap.yml 里
+  config:
+    import:
+      - nacos:ip-user-service.yaml   # 你自己指定的 DataId
+
+  cloud:
+    nacos:
+      server-addr: 192.168.1.109:20000   # 配置中心和注册中心地址可以共用
+
+      # 配置中心专属配置（必须写全）
+      config:
+        server-addr: 192.168.1.109:20000
+        file-extension: yaml
+        namespace: public                  # 如果不是公共命名空间，改成你的 namespaceId
+        group: DEFAULT_GROUP                # 如果不是默认组，改成你的组名
+        username: nacos                     # 如果开了鉴权就填
+        password: nacos                     # 如果开了鉴权就填
+        refresh-enabled: true               # 支持动态刷新
+
+      # 服务注册发现（可以保留）
+      discovery:
+        server-addr: 192.168.1.109:20000
+        heart-beat-interval: 5
+        heart-beat-timeout: 15

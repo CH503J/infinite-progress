@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>三级展开树 + 右侧详情（动态渲染示例）</title>
+  <style>
+    :root{
+      --gap:16px;
+      --sidebar-w:320px;
+      --bg:#f6f8fa;
+      --card:#ffffff;
+      --muted:#6b7280;
+      --accent:#2563eb;
+      --hover:#eef6ff;
+      --radius:8px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: Inter, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background:var(--bg);
+      color:#111827;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      height:100vh;
+      display:flex;
+      align-items:stretch;
+      padding:24px;
+      gap:var(--gap);
+    }
+
+    .container{
+      display:flex;
+      width:100%;
+      gap:var(--gap);
+      align-items:stretch;
+    }
+
+    /* 左侧侧栏 */
+    .sidebar{
+      width:var(--sidebar-w);
+      background:var(--card);
+      border-radius:var(--radius);
+      padding:12px;
+      box-shadow:0 1px 4px rgba(15,23,42,0.06);
+      display:flex;
+      flex-direction:column;
+      min-height:400px;
+    }
+    .search{
+      display:flex;
+      gap:8px;
+      margin-bottom:8px;
+    }
+    .search input{
+      flex:1;
+      border:1px solid #e6e9ef;
+      border-radius:6px;
+      padding:8px 10px;
+      outline:none;
+      font-size:13px;
+    }
+
+    .tree{
+      overflow:auto;
+      padding:6px;
+    }
+
+    /* tree node */
+    .node{
+      list-style:none;
+      margin:0;
+      padding:0;
+    }
+    .item{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:6px 8px;
+      border-radius:6px;
+      cursor:pointer;
+      user-select:none;
+      font-size:14px;
+    }
+    .item:hover{ background:var(--hover); }
+    .item[aria-selected="true"]{
+      background:linear-gradient(90deg, rgba(37,99,235,0.08), rgba(37,99,235,0.02));
+      outline:2px solid rgba(37,99,235,0.12);
+    }
+    .chev{
+      width:18px;height:18px;
+      display:inline-grid;place-items:center;
+      transform-origin:50% 50%;
+      transition:transform .18s ease;
+      color:var(--muted);
+      font-size:12px;
+    }
+    .chev.collapsed{ transform:rotate(0deg); }
+    .chev.expanded{ transform:rotate(90deg); }
+
+    .label{
+      flex:1;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .children{
+      margin-left:22px;
+      padding-left:6px;
+      border-left:1px dashed rgba(15,23,42,0.04);
+      display:none;
+      margin-top:4px;
+    }
+    .children.open{ display:block; }
+
+    /* 右侧详情面板 */
+    .panel{
+      flex:1;
+      background:var(--card);
+      border-radius:var(--radius);
+      padding:18px;
+      box-shadow:0 1px 6px rgba(15,23,42,0.06);
+      min-height:400px;
+      display:flex;
+      flex-direction:column;
+    }
+    .panel .title{
+      font-weight:600;
+      font-size:18px;
+      margin-bottom:10px;
+    }
+    .panel .meta{
+      color:var(--muted);
+      font-size:13px;
+      margin-bottom:14px;
+    }
+    .panel .content{
+      flex:1;
+      background:linear-gradient(180deg,#fff,#fbfdff);
+      padding:12px;
+      border-radius:8px;
+      border:1px solid #eef2ff;
+      font-size:14px;
+      color:#0f172a;
+      overflow:auto;
+    }
+
+    /* small responsive */
+    @media (max-width:800px){
+      .sidebar{ width:280px; }
+      body{ padding:12px }
+    }
+  </style>
+</head>
+<body>
+<div class="container" id="app">
+  <aside class="sidebar" aria-label="导航栏">
+    <div class="search" role="search">
+      <input id="filter" placeholder="快速查找（输入回车重置）" aria-label="搜索菜单" />
+    </div>
+
+    <!-- 树结构：使用 data-* 属性保存 id 与内容引用 -->
+    <ul class="tree" role="tree" id="treeRoot">
+      <!-- 动态渲染的树结构将在这里生成 -->
+    </ul>
+  </aside>
+
+  <main class="panel" id="detailPanel" aria-live="polite">
+    <div class="title" id="title">请选择左侧条目</div>
+    <div class="meta" id="meta">点击左侧任一项以查看详情（支持键盘：↑↓ ←（收起）→（展开） 回车选择）</div>
+    <div class="content" id="content">
+      左侧选择为空时显示的默认内容。这里可以放任何静态 HTML，比如表格、表单或者富文本说明。
+    </div>
+  </main>
+</div>
+
+<script>
+  // 示例树形数据结构
+  const TREE_DATA = [
+    {
+      id: "A",
+      label: "一级 A（可展开）",
+      children: [
+        {
+          id: "A-1",
+          label: "二级 A-1（可展开）",
+          children: [
+            {
+              id: "A-1-1",
+              label: "三级 A-1-1"
+            },
+            {
+              id: "A-1-2",
+              label: "三级 A-1-2"
+            }
+          ]
+        },
+        {
+          id: "A-2",
+          label: "二级 A-2（可展开）",
+          children: [
+            {
+              id: "A-2-1",
+              label: "三级 A-2-1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      id: "B",
+      label: "一级 B（折叠）",
+      children: [
+        {
+          id: "B-1",
+          label: "二级 B-1"
+        },
+        {
+          id: "B-2",
+          label: "二级 B-2"
+        }
+      ]
+    },
+    {
+      id: "C",
+      label: "一级 C（无子项）"
+    }
+  ];
+
+  // 简单的数据：每个 data-id 对应右侧显示的内容（示例）
+  const DETAIL_DATA = {
+    "A": {
+      title: "一级 A",
+      meta: "这是一级节点 A 的摘要信息。",
+      html: "<p>一级 A 的详细说明。通常会包含概览、关键指标、快速操作按钮等。</p><p>示例列表：</p><ul><li>项 1</li><li>项 2</li></ul>"
+    },
+    "A-1": {
+      title: "二级 A-1",
+      meta: "A → A-1 的摘要。",
+      html: "<p>二级 A-1 的详细内容。可以展示图表、表格或嵌入组件（示例为静态文本）。</p>"
+    },
+    "A-1-1": {
+      title: "三级 A-1-1",
+      meta: "最细粒度：A-1-1",
+      html: "<p>三级节点 A-1-1 的信息：详细参数、日志、操作历史等。</p><pre>配置: {\"a\":1,\"b\":2}</pre>"
+    },
+    "A-1-2": {
+      title: "三级 A-1-2",
+      meta: "A-1-2 的摘要",
+      html: "<p>另一条三级信息。</p>"
+    },
+    "A-2": {
+      title: "二级 A-2",
+      meta: "A → A-2 的摘要",
+      html: "<p>A-2 说明。</p>"
+    },
+    "A-2-1": {
+      title: "三级 A-2-1",
+      meta: "A-2-1 摘要",
+      html: "<p>A-2-1 详细。</p>"
+    },
+    "B": {
+      title: "一级 B",
+      meta: "一级 B（折叠状态示例）",
+      html: "<p>B 概要与快速操作。</p>"
+    },
+    "B-1": {
+      title: "二级 B-1",
+      meta: "B-1 的摘要",
+      html: "<p>B-1 内容。</p>"
+    },
+    "B-2": {
+      title: "二级 B-2",
+      meta: "B-2 的摘要",
+      html: "<p>B-2 内容。</p>"
+    },
+    "C": {
+      title: "一级 C",
+      meta: "单节点示例",
+      html: "<p>C 节点没有子项。</p>"
+    }
+  };
+
+  // 动态递归渲染树形结构
+  function renderTree(data, container) {
+    data.forEach(item => {
+      const node = document.createElement('li');
+      node.className = 'node';
+      node.setAttribute('role', 'treeitem');
+      
+      const itemDiv = document.createElement('div');
+      itemDiv.className = 'item';
+      itemDiv.tabIndex = 0;
+      itemDiv.setAttribute('data-id', item.id);
+      itemDiv.setAttribute('role', 'presentation');
+      
+      // 如果有子节点，创建展开/收起图标
+      if (item.children && item.children.length > 0) {
+        node.setAttribute('aria-expanded', 'false');
+        
+        const chevDiv = document.createElement('div');
+        chevDiv.className = 'chev collapsed';
+        chevDiv.setAttribute('aria-hidden', 'true');
+        chevDiv.textContent = '▶';
+        chevDiv.setAttribute('data-action', 'toggle'); // 标记为切换操作
+        
+        const labelDiv = document.createElement('div');
+        labelDiv.className = 'label';
+        labelDiv.textContent = item.label;
+        labelDiv.setAttribute('data-action', 'select'); // 标记为选择操作
+        
+        itemDiv.appendChild(chevDiv);
+        itemDiv.appendChild(labelDiv);
+        
+        const childrenUl = document.createElement('ul');
+        childrenUl.className = 'children';
+        childrenUl.setAttribute('role', 'group');
+        
+        // 递归渲染子节点
+        renderTree(item.children, childrenUl);
+        
+        node.appendChild(itemDiv);
+        node.appendChild(childrenUl);
+      } else {
+        // 没有子节点，不显示箭头图标
+        const spacerDiv = document.createElement('div');
+        spacerDiv.style.width = '18px'; // 保持布局一致性
+        
+        const labelDiv = document.createElement('div');
+        labelDiv.className = 'label';
+        labelDiv.textContent = item.label;
+        labelDiv.setAttribute('data-action', 'select'); // 标记为选择操作
+        
+        itemDiv.appendChild(spacerDiv);
+        itemDiv.appendChild(labelDiv);
+        
+        node.appendChild(itemDiv);
+      }
+      
+      container.appendChild(node);
+    });
+  }
+
+  // 辅助：根据 node 元素寻找到对应的 .children 列表（如果有）
+  function getChildrenUl(itemEl){
+    const node = itemEl.closest('.node');
+    if(!node) return null;
+    return node.querySelector(':scope > .children');
+  }
+
+  // 切换展开/收起
+  function toggleExpand(itemEl, open){
+    const chev = itemEl.querySelector('.chev');
+    const children = getChildrenUl(itemEl);
+    const node = itemEl.closest('.node');
+    if(!children || !node) return false;
+    const isOpen = children.classList.contains('open');
+    const wantOpen = (typeof open === 'boolean') ? open : !isOpen;
+    if(wantOpen){
+      children.classList.add('open');
+      if(chev){ chev.classList.remove('collapsed'); chev.classList.add('expanded'); }
+      node.setAttribute('aria-expanded','true');
+    }else{
+      children.classList.remove('open');
+      if(chev){ chev.classList.remove('expanded'); chev.classList.add('collapsed'); }
+      node.setAttribute('aria-expanded','false');
+    }
+    return wantOpen;
+  }
+
+  // 选择项，更新右侧面板
+  function selectItem(itemEl){
+    // 取消上一次选中
+    document.querySelectorAll('.item[aria-selected="true"]').forEach(el => el.setAttribute('aria-selected','false'));
+    itemEl.setAttribute('aria-selected','true');
+    const id = itemEl.getAttribute('data-id');
+    const panelTitle = document.getElementById('title');
+    const panelMeta = document.getElementById('meta');
+    const panelContent = document.getElementById('content');
+    if(id && DETAIL_DATA[id]){
+      panelTitle.textContent = DETAIL_DATA[id].title;
+      panelMeta.textContent = DETAIL_DATA[id].meta;
+      panelContent.innerHTML = DETAIL_DATA[id].html;
+    }else{
+      panelTitle.textContent = itemEl.textContent.trim();
+      panelMeta.textContent = '未找到对应数据（静态示例）';
+      panelContent.innerHTML = '<p>没有为此条目配置详细内容。</p>';
+    }
+    // 保持焦点在被点击项（便于键盘连续操作）
+    itemEl.focus();
+  }
+
+  // 事件代理：处理点击（展开/收起/选中）
+  const treeRoot = document.getElementById('treeRoot');
+  treeRoot.addEventListener('click', (ev) => {
+    const target = ev.target;
+    
+    // 查找最近的.item祖先元素
+    const item = target.closest('.item');
+    if (!item || !treeRoot.contains(item)) return;
+    
+    // 获取点击目标上的data-action属性
+    const action = target.getAttribute('data-action');
+    
+    if (action === 'toggle') {
+      // 点击箭头图标，只切换展开/收起状态
+      toggleExpand(item);
+    } else if (action === 'select') {
+      // 点击标签，只选择项目并显示详情
+      selectItem(item);
+    } else {
+      // 检查是否点击在chev上
+      const chev = target.closest('.chev');
+      if (chev) {
+        toggleExpand(item);
+      } else {
+        // 默认行为：选择项目
+        selectItem(item);
+      }
+    }
+  });
+
+  // 键盘支持：上下移动、左右展开/收起、回车选择
+  treeRoot.addEventListener('keydown', (ev) => {
+    const focused = document.activeElement;
+    if(!focused || !focused.classList.contains('item')) return;
+    if(ev.key === 'ArrowDown' || ev.key === 'ArrowUp'){
+      ev.preventDefault();
+      // 构建可聚焦项数组（当前可见的）
+      const visible = Array.from(treeRoot.querySelectorAll('.item')).filter(i => isElementVisible(i));
+      const idx = visible.indexOf(focused);
+      const nextIdx = (ev.key === 'ArrowDown') ? Math.min(visible.length-1, idx+1) : Math.max(0, idx-1);
+      visible[nextIdx].focus();
+    }else if(ev.key === 'ArrowRight'){
+      // 展开
+      const children = getChildrenUl(focused);
+      if(children && !children.classList.contains('open')){
+        toggleExpand(focused, true);
+      }else{
+        // 如果已展开则聚焦第一个子项
+        const firstChildItem = focused.closest('.node')?.querySelector('.children.open .item');
+        if(firstChildItem) firstChildItem.focus();
+      }
+    }else if(ev.key === 'ArrowLeft'){
+      // 收起或移动到父级
+      const node = focused.closest('.node');
+      const children = node?.querySelector(':scope > .children');
+      if(children && children.classList.contains('open')){
+        toggleExpand(focused, false);
+      }else{
+        // 尝试聚焦父节点的 .item
+        const parentNode = node?.parentElement?.closest('.node');
+        const parentItem = parentNode?.querySelector(':scope > .item');
+        if(parentItem) parentItem.focus();
+      }
+    }else if(ev.key === 'Enter' || ev.key === ' '){
+      ev.preventDefault();
+      // 选择
+      selectItem(focused);
+    }
+  });
+
+  // 简易过滤（按回车清空）
+  const filter = document.getElementById('filter');
+  filter.addEventListener('input', () => {
+    const q = filter.value.trim().toLowerCase();
+    if(!q){
+      // 恢复所有可见性
+      document.querySelectorAll('.node').forEach(n => n.style.display = '');
+      return;
+    }
+    // 显示包含关键字的节点与其父级
+    document.querySelectorAll('.node').forEach(node => {
+      const label = node.querySelector('.label')?.textContent?.toLowerCase() || '';
+      const match = label.includes(q);
+      node.style.display = match ? '' : 'none';
+    });
+  });
+  filter.addEventListener('keydown', (ev) => {
+    if(ev.key === 'Enter'){
+      ev.preventDefault();
+      filter.value = '';
+      document.querySelectorAll('.node').forEach(n => n.style.display = '');
+      // focus 回第一个 item
+      const first = document.querySelector('.item');
+      if(first) first.focus();
+    }
+  });
+
+  // 辅助：判断元素是否在可见树（父节点未折叠）
+  function isElementVisible(el){
+    if(!el) return false;
+    let cur = el;
+    while(cur && cur !== treeRoot){
+      if(cur.classList && cur.classList.contains('children') && !cur.classList.contains('open')){
+        return false;
+      }
+      cur = cur.parentElement;
+    }
+    // 还要检查是否 display:none（过滤阶段）
+    return window.getComputedStyle(el).display !== 'none';
+  }
+
+  // 初始化：渲染树并选中第一个顶级项
+  (function init(){
+    // 渲染树形结构
+    renderTree(TREE_DATA, treeRoot);
+    
+    // 选中第一个顶级项
+    const first = document.querySelector('.item');
+    if(first) first.setAttribute('aria-selected','false');
+  })();
+
+</script>
+</body>
+</html>

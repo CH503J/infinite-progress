@@ -21,6 +21,8 @@
         <module>ip-gateway</module>
         <module>ip-auth-service</module>
         <module>ip-user-service</module>
+        <module>ip-patent-service</module>
+        <module>ip-tarkov-service</module>
     </modules>
 
     <!-- 全局属性 -->
