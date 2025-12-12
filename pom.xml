@@ -23,6 +23,7 @@
         <module>ip-user-service</module>
         <module>ip-patent-service</module>
         <module>ip-tarkov-service</module>
+        <module>ip-file-service</module>
     </modules>
 
     <!-- 全局属性 -->
